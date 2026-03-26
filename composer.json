@@ -15,8 +15,8 @@
         "spatie/ray": "^1.0"
     },
     "require-dev": {
-        "pestphp/pest": "^1.22",
-        "phpunit/phpunit": "^9.5"
+        "pestphp/pest": "^1.0|^2.0|^3.0",
+        "spatie/ray": "^1.28"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -33,12 +33,6 @@
             "Spatie\\OurRay\\Tests\\": "tests"
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../ray"
-        }
-    ],
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
@@ -47,6 +41,7 @@
     },
     "scripts": {
         "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage"
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
     }
 }

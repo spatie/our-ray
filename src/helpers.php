@@ -20,12 +20,8 @@ Ray::$afterSendCallbacks[] = function (Ray $ray, Request $request) {
 };
 
 $settings = SettingsFactory::createFromConfigFile();
-$cloudApiKey = $settings->cloud_api_key ?? null;
-
-if ($cloudApiKey) {
-    $cloudEndpoint = $settings->cloud_endpoint ?? 'https://ourray.app/api';
-    CloudState::setClient(new CloudClient($cloudApiKey, $cloudEndpoint));
-}
+$cloudEndpoint = $settings->cloud_endpoint ?? 'https://ourray.app/api';
+CloudState::setClient(new CloudClient($cloudEndpoint));
 
 if (! function_exists('our')) {
     function our(): OurRay

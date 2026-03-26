@@ -7,15 +7,10 @@ use Spatie\Ray\Request;
 class CloudClient
 {
     /** @var string */
-    protected $apiKey;
-
-    /** @var string */
     protected $endpoint;
 
-    public function __construct(string $apiKey, string $endpoint = 'https://ourray.app/api')
+    public function __construct(string $endpoint = 'https://ourray.app/api')
     {
-        $this->apiKey = $apiKey;
-
         $this->endpoint = $endpoint;
     }
 
@@ -29,7 +24,6 @@ class CloudClient
                 CURLOPT_POSTFIELDS => $request->toJson(),
                 CURLOPT_HTTPHEADER => [
                     'Content-Type: application/json',
-                    "Authorization: Bearer {$this->apiKey}",
                 ],
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_TIMEOUT => 2,
@@ -39,7 +33,6 @@ class CloudClient
             curl_exec($ch);
             curl_close($ch);
         } catch (\Throwable $e) {
-            // swallow all exceptions
         }
     }
 }

@@ -12,7 +12,7 @@ class FakeCloudClient extends CloudClient
 
     public function __construct()
     {
-        parent::__construct('fake-api-key');
+        parent::__construct();
     }
 
     public function send(Request $request): void
