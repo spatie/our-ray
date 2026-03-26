@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "pestphp/pest": "^1.0|^2.0|^3.0",
-        "spatie/ray": "^1.28"
+        "spatie/ray": "dev-feature/after-send-callbacks"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
