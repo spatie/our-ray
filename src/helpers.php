@@ -26,6 +26,6 @@ CloudState::setClient(new CloudClient($cloudEndpoint));
 if (! function_exists('our')) {
     function our(): OurRay
     {
-        return new OurRay();
+        return new OurRay;
     }
 }

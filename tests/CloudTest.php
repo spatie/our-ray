@@ -1,16 +1,16 @@
 <?php
 
 use Spatie\OurRay\CloudState;
+use Spatie\OurRay\Tests\TestClasses\FakeClient;
 use Spatie\OurRay\Tests\TestClasses\FakeCloudClient;
 use Spatie\OurRay\Tests\TestClasses\ThrowingCloudClient;
 use Spatie\Ray\Ray;
 use Spatie\Ray\Request;
 use Spatie\Ray\Settings\SettingsFactory;
-use Spatie\OurRay\Tests\TestClasses\FakeClient;
 
 beforeEach(function () {
-    $this->fakeClient = new FakeClient();
-    $this->fakeCloudClient = new FakeCloudClient();
+    $this->fakeClient = new FakeClient;
+    $this->fakeCloudClient = new FakeCloudClient;
     $this->settings = SettingsFactory::createFromConfigFile();
 
     $this->ray = new Ray($this->settings, $this->fakeClient, 'fakeUuid');
@@ -69,7 +69,7 @@ it('sends to both via our()->ray()->send()', function () {
 
 it('does not break local send when cloud client throws', function () {
     CloudState::clear();
-    CloudState::setClient(new ThrowingCloudClient());
+    CloudState::setClient(new ThrowingCloudClient);
 
     $this->ray->cloud()->send('test');
 
