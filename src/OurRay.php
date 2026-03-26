@@ -9,6 +9,14 @@ class OurRay
     /** @return Ray */
     public function ray(...$args)
     {
-        return ray(...$args)->cloud();
+        $instance = ray();
+
+        CloudState::enable($instance->uuid);
+
+        if (count($args)) {
+            return $instance->send(...$args);
+        }
+
+        return $instance;
     }
 }
