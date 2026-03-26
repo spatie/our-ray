@@ -116,7 +116,7 @@ class DumbifyPayload
         $lines = [];
 
         foreach ($values as $key => $value) {
-            $lines[] = "{$key}: " . static::stripHtml($value);
+            $lines[] = "{$key}: ".static::stripHtml($value);
         }
 
         return static::toCustom(implode("\n", $lines), $label);
@@ -218,7 +218,7 @@ class DumbifyPayload
         $value = $content['value'] ?? '';
 
         if (! empty($content['context'])) {
-            $value .= "\n" . static::stripHtml($content['context']);
+            $value .= "\n".static::stripHtml($content['context']);
         }
 
         return static::toCustom($value, 'Application Log');
@@ -271,19 +271,19 @@ class DumbifyPayload
         }
 
         if (! empty($content['from'])) {
-            $lines[] = "From: " . static::formatAddresses($content['from']);
+            $lines[] = 'From: '.static::formatAddresses($content['from']);
         }
 
         if (! empty($content['to'])) {
-            $lines[] = "To: " . static::formatAddresses($content['to']);
+            $lines[] = 'To: '.static::formatAddresses($content['to']);
         }
 
         if (! empty($content['cc'])) {
-            $lines[] = "CC: " . static::formatAddresses($content['cc']);
+            $lines[] = 'CC: '.static::formatAddresses($content['cc']);
         }
 
         if (! empty($content['bcc'])) {
-            $lines[] = "BCC: " . static::formatAddresses($content['bcc']);
+            $lines[] = 'BCC: '.static::formatAddresses($content['bcc']);
         }
 
         return static::toCustom(implode("\n", $lines), 'Mail');
@@ -297,7 +297,7 @@ class DumbifyPayload
         $lines = [$className];
 
         foreach ($attributes as $key => $value) {
-            $lines[] = "  {$key}: " . static::stripHtml($value);
+            $lines[] = "  {$key}: ".static::stripHtml($value);
         }
 
         return static::toCustom(implode("\n", $lines), 'Model');
@@ -323,7 +323,7 @@ class DumbifyPayload
             $body = $content['content'];
 
             if (is_string($body) && strlen($body) > 1000) {
-                $body = substr($body, 0, 1000) . '...';
+                $body = substr($body, 0, 1000).'...';
             }
 
             $lines[] = (string) $body;
@@ -344,7 +344,7 @@ class DumbifyPayload
     }
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      */
     protected static function stripHtml($value): string
     {
