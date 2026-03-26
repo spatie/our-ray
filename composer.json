@@ -1,0 +1,36 @@
+{
+    "name": "spatie/our-ray",
+    "description": "Send Ray payloads to the cloud via ourray.app",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4|^8.0",
+        "ext-curl": "*",
+        "spatie/ray": "^1.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.22",
+        "phpunit/phpunit": "^9.5",
+        "spatie/phpunit-snapshot-assertions": "^4.2"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Spatie\\OurRay\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spatie\\OurRay\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    }
+}
