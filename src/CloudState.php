@@ -12,6 +12,10 @@ class CloudState
 
     public static function enable(string $uuid): void
     {
+        if (count(static::$enabledUuids) >= 1000) {
+            static::$enabledUuids = array_slice(static::$enabledUuids, -500, null, true);
+        }
+
         static::$enabledUuids[$uuid] = true;
     }
 
