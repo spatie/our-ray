@@ -6,7 +6,7 @@ use Spatie\OurRay\Tests\TestClasses\ThrowingCloudClient;
 use Spatie\Ray\Ray;
 use Spatie\Ray\Request;
 use Spatie\Ray\Settings\SettingsFactory;
-use Spatie\Ray\Tests\TestClasses\FakeClient;
+use Spatie\OurRay\Tests\TestClasses\FakeClient;
 
 beforeEach(function () {
     $this->fakeClient = new FakeClient();

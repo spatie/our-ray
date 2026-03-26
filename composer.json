@@ -2,6 +2,13 @@
     "name": "spatie/our-ray",
     "description": "Send Ray payloads to the cloud via ourray.app",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Spatie",
+            "email": "info@spatie.be",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": "^7.4|^8.0",
         "ext-curl": "*",
@@ -9,8 +16,7 @@
     },
     "require-dev": {
         "pestphp/pest": "^1.22",
-        "phpunit/phpunit": "^9.5",
-        "spatie/phpunit-snapshot-assertions": "^4.2"
+        "phpunit/phpunit": "^9.5"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -27,10 +33,20 @@
             "Spatie\\OurRay\\Tests\\": "tests"
         }
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../ray"
+        }
+    ],
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
         },
         "sort-packages": true
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
     }
 }
