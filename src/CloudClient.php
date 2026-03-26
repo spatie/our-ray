@@ -17,11 +17,21 @@ class CloudClient
     public function send(Request $request): void
     {
         try {
+            $data = $request->toArray();
+
+            $data['payloads'] = array_values(array_filter(
+                array_map([DumbifyPayload::class, 'dumbify'], $data['payloads'])
+            ));
+
+            if (empty($data['payloads'])) {
+                return;
+            }
+
             $ch = curl_init($this->endpoint);
 
             curl_setopt_array($ch, [
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => $request->toJson(),
+                CURLOPT_POSTFIELDS => json_encode($data),
                 CURLOPT_HTTPHEADER => [
                     'Content-Type: application/json',
                 ],
