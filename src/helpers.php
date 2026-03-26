@@ -19,14 +19,14 @@ try {
             if (CloudState::isEnabled($ray->uuid) && CloudState::client()) {
                 CloudState::client()->send($request);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
         }
     };
 
     $settings = SettingsFactory::createFromConfigFile();
     $cloudEndpoint = $settings->cloud_endpoint ?? 'https://ourray.app/api';
     CloudState::setClient(new CloudClient($cloudEndpoint));
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
 }
 
 if (! function_exists('our')) {
