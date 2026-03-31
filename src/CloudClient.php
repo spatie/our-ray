@@ -28,17 +28,15 @@ class CloudClient
         try {
             $data = $request->toArray();
 
-            $payloads = array_values(array_filter(
+            $data['payloads'] = array_values(array_filter(
                 array_map([DumbifyPayload::class, 'dumbify'], $data['payloads'])
             ));
 
-            if (empty($payloads)) {
+            if (empty($data['payloads'])) {
                 return;
             }
 
-            foreach ($payloads as $payload) {
-                $this->buffer[] = $payload;
-            }
+            $this->buffer[] = $data;
 
             $this->registerShutdown();
 
@@ -56,12 +54,8 @@ class CloudClient
                 return;
             }
 
-            $payloads = $this->buffer;
+            $batch = $this->buffer;
             $this->buffer = [];
-
-            $data = [
-                'payloads' => $payloads,
-            ];
 
             $ch = curl_init($this->endpoint);
 
@@ -71,13 +65,13 @@ class CloudClient
 
             curl_setopt_array($ch, [
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_POSTFIELDS => json_encode($batch),
                 CURLOPT_HTTPHEADER => [
                     'Content-Type: application/json',
                 ],
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT => 2,
-                CURLOPT_CONNECTTIMEOUT => 2,
+                CURLOPT_TIMEOUT => 5,
+                CURLOPT_CONNECTTIMEOUT => 5,
             ]);
 
             curl_exec($ch);

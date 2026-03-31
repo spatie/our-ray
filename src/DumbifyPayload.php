@@ -6,7 +6,6 @@ class DumbifyPayload
 {
     /** @var array<int, string> */
     protected const SUPPORTED_TYPES = [
-        'log',
         'custom',
         'color',
         'size',
@@ -19,6 +18,18 @@ class DumbifyPayload
     {
         try {
             $type = $payload['type'] ?? null;
+
+            if ($type === 'log') {
+                $payload['content'] = static::cleanLogValues($payload['content'] ?? []);
+
+                return $payload;
+            }
+
+            if ($type === 'custom') {
+                $payload['content'] = static::cleanCustomContent($payload['content'] ?? []);
+
+                return $payload;
+            }
 
             if (in_array($type, static::SUPPORTED_TYPES, true)) {
                 return $payload;
@@ -37,6 +48,40 @@ class DumbifyPayload
         } catch (\Throwable $e) {
             return null;
         }
+    }
+
+    protected static function cleanCustomContent(array $content): array
+    {
+        if (! isset($content['content']) || ! is_string($content['content'])) {
+            return $content;
+        }
+
+        if (strpos($content['content'], 'sf-dump') === false) {
+            return $content;
+        }
+
+        $content['content'] = nl2br(htmlspecialchars(
+            trim(html_entity_decode(strip_tags($content['content'])))
+        ));
+
+        return $content;
+    }
+
+    protected static function cleanLogValues(array $content): array
+    {
+        if (! isset($content['values'])) {
+            return $content;
+        }
+
+        $content['values'] = array_map(function ($value) {
+            if (! is_string($value) || strpos($value, 'sf-dump') === false) {
+                return $value;
+            }
+
+            return trim(html_entity_decode(strip_tags($value)));
+        }, $content['values']);
+
+        return $content;
     }
 
     protected static function convert(?string $type, array $content): ?array
