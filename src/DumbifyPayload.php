@@ -105,7 +105,7 @@ class DumbifyPayload
             return static::convertResponse($content);
         }
 
-        return null;
+        return static::convertFallback($type, $content);
     }
 
     protected static function convertTable(array $content): array
@@ -116,10 +116,10 @@ class DumbifyPayload
         $lines = [];
 
         foreach ($values as $key => $value) {
-            $lines[] = "{$key}: ".static::stripHtml($value);
+            $lines[] = "{$key}: ".(is_string($value) ? $value : (json_encode($value) ?: ''));
         }
 
-        return static::toCustom(implode("\n", $lines), $label);
+        return static::toPayload(implode("\n", $lines), $label);
     }
 
     protected static function convertException(array $content): array
@@ -140,7 +140,7 @@ class DumbifyPayload
             $lines[] = "  {$caller} ({$file}:{$line})";
         }
 
-        return static::toCustom(implode("\n", $lines), 'Exception');
+        return static::toPayload(implode("\n", $lines), 'Exception');
     }
 
     protected static function convertTrace(array $content): array
@@ -158,7 +158,7 @@ class DumbifyPayload
             $lines[] = "#{$i} {$caller} ({$file}:{$line})";
         }
 
-        return static::toCustom(implode("\n", $lines), 'Trace');
+        return static::toPayload(implode("\n", $lines), 'Trace');
     }
 
     protected static function convertCaller(array $content): array
@@ -171,7 +171,7 @@ class DumbifyPayload
 
         $caller = $class ? "{$class}::{$method}" : $method;
 
-        return static::toCustom("{$caller} ({$file}:{$line})", 'Caller');
+        return static::toPayload("{$caller} ({$file}:{$line})", 'Caller');
     }
 
     protected static function convertCarbon(array $content): array
@@ -181,7 +181,7 @@ class DumbifyPayload
 
         $text = $timezone ? "{$formatted} ({$timezone})" : (string) $formatted;
 
-        return static::toCustom($text, 'Carbon');
+        return static::toPayload($text, 'Carbon');
     }
 
     protected static function convertMeasure(array $content): array
@@ -189,13 +189,13 @@ class DumbifyPayload
         $name = $content['name'] ?? 'default';
 
         if ($content['is_new_timer'] ?? false) {
-            return static::toCustom("Started timer '{$name}'", 'Measure');
+            return static::toPayload("Started timer '{$name}'", 'Measure');
         }
 
         $totalTime = $content['total_time'] ?? 0;
         $timeSinceLastCall = $content['time_since_last_call'] ?? 0;
 
-        return static::toCustom(
+        return static::toPayload(
             "{$name}: {$totalTime}ms total, {$timeSinceLastCall}ms since last call",
             'Measure'
         );
@@ -205,12 +205,12 @@ class DumbifyPayload
     {
         $value = $content['value'] ?? '';
 
-        return static::toCustom($value, 'JSON');
+        return static::toPayload($value, 'JSON');
     }
 
     protected static function convertNotify(array $content): array
     {
-        return static::toCustom($content['value'] ?? '', 'Notify');
+        return static::toPayload($content['value'] ?? '', 'Notify');
     }
 
     protected static function convertApplicationLog(array $content): array
@@ -218,10 +218,10 @@ class DumbifyPayload
         $value = $content['value'] ?? '';
 
         if (! empty($content['context'])) {
-            $value .= "\n".static::stripHtml($content['context']);
+            $value .= "\n".(is_string($content['context']) ? $content['context'] : (json_encode($content['context']) ?: ''));
         }
 
-        return static::toCustom($value, 'Application Log');
+        return static::toPayload($value, 'Application Log');
     }
 
     protected static function convertExecutedQuery(array $content): array
@@ -246,12 +246,12 @@ class DumbifyPayload
             $parts[] = implode(' | ', $meta);
         }
 
-        return static::toCustom(implode("\n", $parts), 'Query');
+        return static::toPayload(implode("\n", $parts), 'Query');
     }
 
     protected static function convertEvent(array $content): array
     {
-        return static::toCustom($content['name'] ?? '', 'Event');
+        return static::toPayload($content['name'] ?? '', 'Event');
     }
 
     protected static function convertJobEvent(array $content): array
@@ -259,7 +259,7 @@ class DumbifyPayload
         $eventName = $content['event_name'] ?? '';
         $job = $content['job'] ?? '';
 
-        return static::toCustom("{$eventName}: {$job}", 'Job');
+        return static::toPayload("{$eventName}: {$job}", 'Job');
     }
 
     protected static function convertMailable(array $content): array
@@ -286,7 +286,7 @@ class DumbifyPayload
             $lines[] = 'BCC: '.static::formatAddresses($content['bcc']);
         }
 
-        return static::toCustom(implode("\n", $lines), 'Mail');
+        return static::toPayload(implode("\n", $lines), 'Mail');
     }
 
     protected static function convertEloquentModel(array $content): array
@@ -297,10 +297,10 @@ class DumbifyPayload
         $lines = [$className];
 
         foreach ($attributes as $key => $value) {
-            $lines[] = "  {$key}: ".static::stripHtml($value);
+            $lines[] = "  {$key}: ".(is_string($value) ? $value : (json_encode($value) ?: ''));
         }
 
-        return static::toCustom(implode("\n", $lines), 'Model');
+        return static::toPayload(implode("\n", $lines), 'Model');
     }
 
     protected static function convertView(array $content): array
@@ -309,7 +309,7 @@ class DumbifyPayload
             ?? $content['view_path']
             ?? '';
 
-        return static::toCustom($viewPath, 'View');
+        return static::toPayload($viewPath, 'View');
     }
 
     protected static function convertResponse(array $content): array
@@ -329,11 +329,32 @@ class DumbifyPayload
             $lines[] = (string) $body;
         }
 
-        return static::toCustom(implode("\n", $lines), 'Response');
+        return static::toPayload(implode("\n", $lines), 'Response');
     }
 
-    protected static function toCustom(string $text, string $label): array
+    protected static function convertFallback(?string $type, array $content): ?array
     {
+        $parts = [];
+
+        foreach ($content as $value) {
+            $parts[] = is_string($value) ? $value : (json_encode($value) ?: '');
+        }
+
+        $text = trim(implode("\n", array_filter($parts)));
+
+        if ($text === '') {
+            return null;
+        }
+
+        $label = $type ? ucfirst(str_replace('_', ' ', $type)) : 'Output';
+
+        return static::toPayload($text, $label);
+    }
+
+    protected static function toPayload(string $text, string $label): array
+    {
+        $text = trim(html_entity_decode(strip_tags($text)));
+
         return [
             'type' => 'custom',
             'content' => [
@@ -341,18 +362,6 @@ class DumbifyPayload
                 'label' => $label,
             ],
         ];
-    }
-
-    /**
-     * @param  mixed  $value
-     */
-    protected static function stripHtml($value): string
-    {
-        if (! is_string($value)) {
-            return json_encode($value) ?: '';
-        }
-
-        return trim(html_entity_decode(strip_tags($value)));
     }
 
     protected static function formatAddresses(array $addresses): string

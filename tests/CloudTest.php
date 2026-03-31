@@ -34,20 +34,7 @@ afterEach(function () {
     Ray::$afterSendCallbacks = [];
 });
 
-it('cloud() returns the ray instance for fluent chaining', function () {
-    $result = $this->ray->cloud();
-
-    expect($result)->toBe($this->ray);
-});
-
-it('sends to both local and cloud when cloud() is called', function () {
-    $this->ray->cloud()->send('test');
-
-    expect($this->fakeClient->sentRequests())->toHaveCount(1);
-    expect($this->fakeCloudClient->sentRequests())->toHaveCount(1);
-});
-
-it('only sends to local when cloud() is not called', function () {
+it('only sends to local when cloud is not enabled', function () {
     $this->ray->send('test');
 
     expect($this->fakeClient->sentRequests())->toHaveCount(1);
@@ -70,8 +57,9 @@ it('sends to both via our()->ray()->send()', function () {
 it('does not break local send when cloud client throws', function () {
     CloudState::clear();
     CloudState::setClient(new ThrowingCloudClient);
+    CloudState::enable($this->ray->uuid);
 
-    $this->ray->cloud()->send('test');
+    $this->ray->send('test');
 
     expect($this->fakeClient->sentRequests())->toHaveCount(1);
 });

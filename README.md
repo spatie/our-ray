@@ -16,13 +16,7 @@ composer require spatie/our-ray
 
 ## Usage
 
-You can send any Ray call to the cloud by chaining `->cloud()`:
-
-```php
-ray('my debug data')->cloud();
-```
-
-Or use the `our()` helper to automatically send to the cloud:
+Use the `our()` helper to automatically send Ray payloads to the cloud:
 
 ```php
 our()->ray('my debug data');
