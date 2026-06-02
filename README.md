@@ -1,7 +1,7 @@
 # Send Ray payloads to the cloud via ourray.app
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/our-ray.svg?style=flat-square)](https://packagist.org/packages/spatie/our-ray)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/spatie/our-ray/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/spatie/our-ray/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Tests Action Status](https://github.com/spatie/our-ray/actions/workflows/run-tests.yml/badge.svg)](https://github.com/spatie/our-ray/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/our-ray.svg?style=flat-square)](https://packagist.org/packages/spatie/our-ray)
 
 This package allows you to send [Ray](https://myray.app) payloads to the cloud via [ourray.app](https://ourray.app).
