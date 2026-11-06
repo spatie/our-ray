@@ -15,7 +15,7 @@
         "spatie/ray": "^1.48"
     },
     "require-dev": {
-        "pestphp/pest": "^1.0|^2.0|^3.0"
+        "pestphp/pest": "^1.0|^2.0|^3.0|^4.0|^5.3.5"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
