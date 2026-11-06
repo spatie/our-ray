@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5', '8.6']
         stability: [prefer-lowest, prefer-stable]
 
     name: P${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.os }}
@@ -36,8 +36,20 @@ jobs:
           extensions: curl
           coverage: none
 
+      - name: Show runtime versions
+        run: |
+          php --version
+          composer --version
+
+      - name: Select modern test tooling
+        if: contains(fromJSON('["8.4", "8.5", "8.6"]'), matrix.php)
+        run: composer require --dev 'pestphp/pest:^5.3.5' --no-update --no-interaction
+
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
+      - name: Show resolved dependencies
+        run: composer show --direct
+
       - name: Execute tests
-        run: composer test
+        run: composer test -- ${{ contains(fromJSON('["8.4", "8.5", "8.6"]'), matrix.php) && '--display-deprecations --display-phpunit-deprecations' || '' }}
